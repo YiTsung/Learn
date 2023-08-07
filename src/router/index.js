@@ -1,19 +1,65 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 
 const routes = [
   {
     path: '/',
-    name: 'home',
-    component: HomeView
+    component: () => import('../views/FrontView.vue'),
+    children: [
+      {
+        path: 'products',
+        name: 'products',
+        component: () => import('../views/Front/ProductsView.vue')
+      },
+      {
+        path: 'products/:productId',
+        name: 'productDetail',
+        component: () => import('../views/Front/ProductDetailView.vue')
+      },
+      {
+        path: 'userCart',
+        component: () => import('../views/Front/UserCartView.vue')
+      },
+      {
+        path: 'userCheckinfo',
+        component: () => import('../views/Front/UserCheckinfoView.vue')
+      },
+      {
+        path: 'userCheckout/:orderId',
+        component: () => import('../views/Front/UserCheckoutView.vue')
+      }
+    ]
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+    path: '/login',
+    name: 'login',
+    component: () => import('../views/LoginView.vue')
+  },
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: () => import('../views/DashBoardView.vue'),
+    children: [
+      {
+        path: 'ProductManage',
+        name: 'ProductManage',
+        component: () => import('../views/Admin/ProductManage.vue')
+      },
+      {
+        path: 'OrderManage',
+        name: 'OrderManage',
+        component: () => import('../views/Admin/OrderManage.vue')
+      },
+      {
+        path: 'CouponManage',
+        name: 'CouponManage',
+        component: () => import('../views/Admin/CouponManage.vue')
+      }
+    ]
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: () => import('../views/NotFound.vue')
   }
 ]
 
