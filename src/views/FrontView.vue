@@ -1,8 +1,10 @@
 <template>
     <FrontNavbar></FrontNavbar>
     <div class="wrapper">
+      <br><br>
       <router-view></router-view>
     </div>
+    <br><br>
     <FrontFotter></FrontFotter>
 </template>
 
@@ -23,7 +25,7 @@ body{
   height: 100%;
 }
 .wrapper{
-  margin-top:45px ;
+  margin-top: 45px ;
   min-height: calc(100vh - 190px);
 }
 </style>

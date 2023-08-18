@@ -6,6 +6,11 @@ const routes = [
     component: () => import('../views/FrontView.vue'),
     children: [
       {
+        path: '/',
+        name: 'home',
+        component: () => import('../views/Front/HomeView.vue')
+      },
+      {
         path: 'products',
         name: 'products',
         component: () => import('../views/Front/ProductsView.vue')
@@ -26,6 +31,14 @@ const routes = [
       {
         path: 'userCheckout/:orderId',
         component: () => import('../views/Front/UserCheckoutView.vue')
+      },
+      {
+        path: 'favorite',
+        component: () => import('../views/Front/FavoriteView.vue')
+      },
+      {
+        path: 'QA',
+        component: () => import('../views/Front/QAView.vue')
       }
     ]
   },

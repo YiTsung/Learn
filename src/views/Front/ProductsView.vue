@@ -5,7 +5,8 @@
     <div class="side-bar col-lg-2">
       <div class="text-center d-flex flex-md-column justify-content-center">
         <button v-for="item in categoryList" :key="item.value"
-            class="btn btn-outline-brown me-1 me-md-0 mb-md-1 py-md-2 text-nowrap" type="button"
+            class="btn btn-outline-success me-1 me-md-0 mb-md-1 py-md-2 text-nowrap" type="button"
+            @click="filterProducts(item.value)"
             :class="{ active: item.value === this.currentCategory }">
               {{ item.value }}
         </button>
@@ -13,7 +14,7 @@
     </div>
     <div class="col-lg-10 row ms-0">
       <div class="col-sm-12 col-md-6 col-lg-4"
-      v-for="item in products" :key="item.id">
+      v-for="item in tempProduct" :key="item.id">
         <div class="card mt-1 mb-2 mx-auto">
           <a href="#" @click.prevent="getProduct(item.id)">
             <div class="overflow-hidden text-light position-relative border-bottom card-pic">
@@ -32,7 +33,7 @@
                   <div class="mw-25 text-end col-2 add-favorite">
                     <a href="#"  @click.stop.prevent="updateFavorite(item)">
                       <i class="bi bi-heart text-danger" title="加入收藏"
-                      v-if="loveList.every((id) => item.id !== id)"></i>
+                      v-if="idList.every((id) => item.id !== id)"></i>
                       <i class="bi bi-heart-fill text-danger" title="移除收藏" v-else></i>{{ null }}
                     </a>
                   </div>
@@ -62,22 +63,20 @@
     </div>
   </div>
  </div>
- <Pagination :pages="pagination" @emit-pages="getProducts"></Pagination>
 </template>
 
 <script>
-import Pagination from '@/components/Pagination.vue'
+import cartMixin from '@/mixins/GetCart'
+import favoriteMixin from '@/mixins/GetFavorite'
 
 export default {
-  components: {
-    Pagination
-  },
   inject: ['emitter'],
+  mixins: [cartMixin, favoriteMixin],
   data () {
     return {
-      loveList: [],
+      idList: [],
       products: [],
-      pagination: {},
+      tempProduct: {},
       isLoading: false,
       currentCategory: '全部',
       status: {
@@ -92,15 +91,15 @@ export default {
     }
   },
   methods: {
-    getProducts (page = 1) {
+    getProducts () {
       this.isLoading = true
-      const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/products/?page=${page}`
+      const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/products/all`
       this.$http.get(api)
         .then((res) => {
           this.isLoading = false
           if (res.data.success) {
             this.products = res.data.products
-            this.pagination = res.data.pagination
+            this.tempProduct = this.products
           }
         })
     },
@@ -108,20 +107,23 @@ export default {
       this.$router.push(`/products/${id}`)
     },
     updateFavorite (item) {
-      if (this.loveList.every((id) => item.id !== id)) {
-        this.loveList.push(item.id)
+      if (this.idList.every((id) => item.id !== id)) {
+        this.idList.push(item.id)
+        localStorage.setItem('favoriteItem', JSON.stringify(this.idList))
         this.emitter.emit('push-message', {
           style: 'success',
           title: '已新增至收藏'
         })
       } else {
-        this.loveList.indexOf(item.id)
-        this.loveList.splice(this.loveList.indexOf(item.id), 1)
+        this.idList.indexOf(item.id)
+        this.idList.splice(this.idList.indexOf(item.id), 1)
+        localStorage.setItem('favoriteItem', JSON.stringify(this.idList))
         this.emitter.emit('push-message', {
           style: 'danger',
           title: '已取消收藏'
         })
       }
+      this.getFavorite()
     },
     addCart (id) {
       this.status.loadingItem = id
@@ -133,15 +135,32 @@ export default {
       this.$http.post(api, { data: cart })
         .then((res) => {
           this.status.loadingItem = ''
+          this.getCarts()
           this.emitter.emit('push-message', {
             style: 'success',
             title: '已加入購物車'
           })
         })
+    },
+    filterProducts (value) {
+      this.isLoading = true
+      this.currentCategory = value
+      setTimeout(() => {
+        if (value === '全部') {
+          this.tempProduct = this.products
+          this.isLoading = false
+        } else {
+          this.tempProduct = this.products.filter((item) => {
+            return item.category === value
+          })
+          this.isLoading = false
+        }
+      }, 1000)
     }
   },
   created () {
     this.getProducts()
+    this.getFavorite()
   }
 }
 </script>

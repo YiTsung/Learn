@@ -222,8 +222,16 @@ export default {
         .then((res) => {
           this.isLoading = false
           if (res.data.success) {
-            this.form = {}
             this.$router.push(`/userCheckout/${res.data.orderId}`)
+            this.form = {
+              user: {
+                name: '',
+                email: '',
+                tel: '',
+                address: ''
+              },
+              message: ''
+            }
           }
         })
         .catch((error) => {

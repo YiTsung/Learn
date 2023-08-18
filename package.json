@@ -10,11 +10,13 @@
   "dependencies": {
     "@vee-validate/i18n": "^4.11.1",
     "@vee-validate/rules": "^4.11.1",
+    "aos": "^3.0.0-beta.6",
     "axios": "^1.4.0",
     "bootstrap": "^5.3.1",
     "bootstrap-icons": "^1.10.5",
     "core-js": "^3.8.3",
     "mitt": "^3.0.1",
+    "sweetalert2": "^11.7.20",
     "vee-validate": "^4.11.1",
     "vue": "^3.2.13",
     "vue-axios": "^3.5.2",

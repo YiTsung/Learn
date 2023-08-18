@@ -7,5 +7,5 @@ export function currency (num) {
 }
 // 日期格式 yyyy/mm/dd
 export function date (time) {
-  return new Date(time * 1000).toISOString().split('T')[0]
+  return new Date(time * 1000).toLocaleDateString()
 }

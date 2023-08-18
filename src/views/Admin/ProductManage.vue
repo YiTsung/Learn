@@ -59,14 +59,16 @@ export default {
       productList: [],
       pagination: {},
       tempProduct: {},
+      currentPage: 1,
       isNew: false,
       isLoading: false
     }
   },
   methods: {
-    getProducts (page = 1) {
+    getProducts (currentPage = 1) {
+      this.currentPage = currentPage
       this.isLoading = true
-      const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/products/?page=${page}`
+      const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/products/?page=${currentPage}`
       this.$http.get(api)
         .then((res) => {
           this.isLoading = false
@@ -92,7 +94,7 @@ export default {
           this.isLoading = false
           this.$refs.productModal.hideModal()
           if (res.data.success) {
-            this.getProducts()
+            this.getProducts(this.currentPage)
             if (!this.isNew) {
               this.emitter.emit('push-message', {
                 style: 'success',
@@ -128,7 +130,7 @@ export default {
         .then((res) => {
           this.isLoading = false
           this.$refs.checkModal.hideModal()
-          this.getProducts()
+          this.getProducts(this.currentPage)
           this.emitter.emit('push-message', {
             style: 'success',
             title: '刪除完成'

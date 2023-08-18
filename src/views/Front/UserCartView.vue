@@ -136,8 +136,10 @@
  </section>
 </template>
 <script>
+import cartMixin from '@/mixins/GetCart'
 export default {
   inject: ['emitter'],
+  mixins: [cartMixin],
   data () {
     return {
       carts: {},
@@ -192,6 +194,7 @@ export default {
         .then((res) => {
           this.isLoading = false
           this.getCart()
+          this.getCarts()
         })
     },
     addCouponCode () {
