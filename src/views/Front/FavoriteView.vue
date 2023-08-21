@@ -6,7 +6,7 @@
         @click.prevent="$router.push('/products')">來去逛逛
     </button>
   </section>
-  <section v-else>
+  <section v-else class="mt-5">
     <div class="row">
         <div class="col-sm-12 col-md-6 col-lg-4" v-for="item in favoriteList" :key="item.id">
           <div class="card mt-1 mb-2 mx-auto">
